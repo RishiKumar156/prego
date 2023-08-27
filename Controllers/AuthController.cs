@@ -30,5 +30,6 @@ namespace API.Controllers
             _newuserCollections.InsertOne(userRegister);
             return Ok(userRegister);
         }
+
     }
 }

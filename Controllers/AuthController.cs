@@ -30,5 +30,22 @@ namespace API.Controllers
             _newuserCollections.InsertOne(userRegister);
             return Ok(userRegister);
         }
+
+
+        [HttpPost("login")]
+        public ActionResult<UserRegister> LoginUser(UserRegisterDTO request)
+        {
+            var user = _newuserCollections.Find( c => c.UserEmail == request.UserEmail ).FirstOrDefault();
+
+            if(user == null)
+            {
+                return BadRequest("User name not found");
+            }
+            if(!BCrypt.Net.BCrypt.Verify(request.Password , user.Password))
+            {
+                return Unauthorized("Credential are mismatch");
+            }
+            return Ok(user);
+        }
     }
 }

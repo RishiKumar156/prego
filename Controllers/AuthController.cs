@@ -1,7 +1,11 @@
 ﻿using API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
 
 namespace API.Controllers
 {
@@ -36,7 +40,6 @@ namespace API.Controllers
         public ActionResult<UserRegister> LoginUser(UserRegisterDTO request)
         {
             var user = _newuserCollections.Find( c => c.UserEmail == request.UserEmail ).FirstOrDefault();
-
             if(user == null)
             {
                 return BadRequest("User name not found");
@@ -45,7 +48,35 @@ namespace API.Controllers
             {
                 return Unauthorized("Credential are mismatch");
             }
+
+            var token = CreateToken(user);
+            var filter = Builders<UserRegister>.Filter.Eq("_id", user.Id);
+            var update = Builders<UserRegister>.Update.Set("authToken", user.AuthToken);
+            _newuserCollections.UpdateOne(filter, update);
             return Ok(user);
+        }
+
+        private string CreateToken(UserRegister userRegister)
+        {
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name , userRegister.UserEmail) 
+            };
+
+            var key = new Byte[64];
+
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(key);
+            }
+            var symmetrickey = new SymmetricSecurityKey(key);
+            var cred = new SigningCredentials(symmetrickey, SecurityAlgorithms.HmacSha512Signature);
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(15),
+                signingCredentials: cred);
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            return jwt;
         }
     }
 }

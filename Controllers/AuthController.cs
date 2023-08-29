@@ -73,7 +73,6 @@ namespace API.Controllers
             var cred = new SigningCredentials(symmetrickey, SecurityAlgorithms.HmacSha512Signature);
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(15),
                 signingCredentials: cred);
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
             return jwt;

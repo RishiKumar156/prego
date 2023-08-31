@@ -10,8 +10,6 @@ namespace API.Controllers
     public class EmailRegisterController : ControllerBase
     {
         private readonly IMongoCollection<Email> _mongoCollection;
-
-        private static Email EmailRegister = new Email();
         
         public EmailRegisterController(IMongoClient mongoClient)
         {
@@ -22,15 +20,16 @@ namespace API.Controllers
         [HttpPost("EmailRegister")]
         public IActionResult RegisterUser(EmailDTO email)
         {
-            var Hashpassword = BCrypt.Net.BCrypt.HashPassword(email.Password);
-            EmailRegister.UserName = email.UserName;
-            EmailRegister.Password = Hashpassword;
-            if (email == null)
+            var Haspassword = BCrypt.Net.BCrypt.HashPassword(email.Password);
+            var Register = new Email();
+            Register.UserName = email.UserName;
+            Register.Password = Haspassword;
+            if(Register == null)
             {
-                return BadRequest("Data Not founnd"); 
+                return BadRequest();
             }
-           _mongoCollection.InsertOne(EmailRegister);
-            return Ok(email);
+            _mongoCollection.InsertOne(Register);
+            return Ok(Register);
         }
 
         [HttpPost("EmailLogin")]

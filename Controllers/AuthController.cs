@@ -16,7 +16,7 @@ namespace API.Controllers
         private readonly IMongoCollection<UserRegister> _newuserCollections;
         private readonly IConfiguration _configuration;
 
-        public static UserRegister userRegister = new UserRegister();
+       // public static UserRegister userRegister = new UserRegister();
 
         public AuthController(IMongoClient client , IConfiguration configuration )
         {
@@ -28,6 +28,7 @@ namespace API.Controllers
         [HttpPost("Register")]
         public ActionResult<UserRegister> CreateUser(UserRegisterDTO request)
         {
+            var userRegister = new UserRegister();
             var haspassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
             userRegister.UserEmail = request.UserEmail;
             userRegister.Password = haspassword;

@@ -16,7 +16,7 @@ namespace API.Models
         public string GmailId { get; set; }
 
         [BsonElement("picture")]
-        public string Picutre { get; set; }
+        public string Picture { get; set; }
 
         [BsonElement("GoogleID")]
         public string Gid { get; set; }

@@ -19,11 +19,12 @@ namespace API.Controllers
         [HttpPost("newuser")]
         public IActionResult RegisterUser(GoogleRegister googleRegister)
         {
-            _GoogleRegisterCcollection.InsertOne(googleRegister);
-            if(googleRegister == null)
+            var UserExists = _GoogleRegisterCcollection.Find(c => c.GmailId == googleRegister.GmailId).FirstOrDefault();
+            if(UserExists != null)
             {
-                return BadRequest("no data found");
+                return BadRequest("User already exists");
             }
+            _GoogleRegisterCcollection.InsertOne(googleRegister);
             return Ok(googleRegister);
         }
     }

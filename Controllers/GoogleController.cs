@@ -22,7 +22,7 @@ namespace API.Controllers
             var UserExists = _GoogleRegisterCcollection.Find(c => c.GmailId == googleRegister.GmailId).FirstOrDefault();
             if(UserExists != null)
             {
-                return BadRequest("User already exists");
+                return Ok(UserExists);
             }
             _GoogleRegisterCcollection.InsertOne(googleRegister);
             return Ok(googleRegister);

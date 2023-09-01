@@ -12,7 +12,15 @@ namespace API.Models
         [BsonElement("username")]
         public string Gusername { get; set; }
 
-        [BsonElement("password")]
-        public string Gpassword { get; set; }
+        [BsonElement("emailId")]
+        public string GmailId { get; set; }
+
+        [BsonElement("picture")]
+        public string Picutre { get; set; }
+
+        [BsonElement("GoogleID")]
+        public string Gid { get; set; }
+
+
     }
 }

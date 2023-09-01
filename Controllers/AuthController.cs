@@ -17,7 +17,6 @@ namespace API.Controllers
         private readonly IConfiguration _configuration;
 
        // public static UserRegister userRegister = new UserRegister();
-
         public AuthController(IMongoClient client , IConfiguration configuration )
         {
             var database = client.GetDatabase("pregopantry");
@@ -35,7 +34,6 @@ namespace API.Controllers
             _newuserCollections.InsertOne(userRegister);
             return Ok(userRegister);
         }
-
 
         [HttpPost("login")]
         public ActionResult<UserRegister> LoginUser(UserRegisterDTO request)

@@ -40,7 +40,7 @@ namespace API.Controllers
             {
                 return BadRequest();
             }
-            return Ok(email);
+            return Ok(user);
         }
     }
 }

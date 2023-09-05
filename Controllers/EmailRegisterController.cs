@@ -28,6 +28,13 @@ namespace API.Controllers
             {
                 return BadRequest();
             }
+            var exist = _mongoCollection.Find( c => c.UserName== email.UserName ).FirstOrDefault();
+
+            if( exist != null)
+            {
+                return Ok("Email Already Exists");
+            }
+
             _mongoCollection.InsertOne(Register);
             return Ok(Register);
         }

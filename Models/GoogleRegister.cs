@@ -21,8 +21,5 @@ namespace API.Models
         [BsonElement("GoogleID")]
         public string Gid { get; set; }
 
-        [BsonElement("PermanentJWT")]
-        public string Jwt { get; set; }
-
     }
 }

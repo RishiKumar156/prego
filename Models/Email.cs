@@ -21,5 +21,8 @@ namespace API.Models
         [BsonElement("CreatedOn")]
         public DateTime UserRegisteredOn { get; set; } = DateTime.UtcNow;
 
+        [BsonElement("Jwt")]
+        public string Jwt { get; set; }
+
     }
 }

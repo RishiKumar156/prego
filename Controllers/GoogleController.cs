@@ -14,10 +14,12 @@ namespace API.Controllers
     public class GoogleController : ControllerBase
     {
         private readonly IMongoCollection<GoogleRegister> _GoogleRegisterCcollection;
+        private readonly IMongoCollection<JwtCollection> _JwtCollection;
         public GoogleController(IMongoClient mongoClient )
         {
             var database = mongoClient.GetDatabase("pregopantry");
             _GoogleRegisterCcollection = database.GetCollection<GoogleRegister>("googlelogin");
+            _JwtCollection = database.GetCollection<JwtCollection>("JwtTokens");
         }
 
         [HttpPost("newuser")]
@@ -26,13 +28,19 @@ namespace API.Controllers
             var UserExists = _GoogleRegisterCcollection.Find(c => c.GmailId == googleRegister.GmailId).FirstOrDefault();
             if(UserExists != null)
             {
-                var JWT = CreateToken(UserExists);
-                UserExists.Jwt = JWT;
                 _GoogleRegisterCcollection.InsertOne(googleRegister);
-                return Ok(UserExists);
+                var JWT = CreateToken(googleRegister);
+                var AddJwt = new JwtCollection
+                {
+                    Username = googleRegister.Gusername,
+                    JwtToken = JWT
+                };
+                _JwtCollection.InsertOne(AddJwt);
+                return Ok(JWT);
             }
-            return Unauthorized("Sing-up failed");
+            return BadRequest("Something went wrong");
         }
+
 
         private string CreateToken(GoogleRegister userRegister)
         {

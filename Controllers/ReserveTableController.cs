@@ -10,22 +10,28 @@ namespace API.Controllers
     public class ReserveTableController : ControllerBase
     {
         private readonly IMongoCollection<ReserveTable> _reservations;
-        private readonly IMongoCollection<GoogleRegister> _googleRegister;
+        private readonly IMongoCollection<JwtCollection> _jwtCollection;
         public ReserveTableController(IMongoClient mongoClient)
         {
             var database = mongoClient.GetDatabase("pregopantry");
             _reservations =  database.GetCollection<ReserveTable>("reservetable");
-            _googleRegister = database.GetCollection<GoogleRegister>("googlelogin");
+            _jwtCollection = database.GetCollection<JwtCollection>("JwtTokens");
         }
 
         [HttpPost("MakeReservation")]
-        public  IActionResult CreateReservation(ReserveTable reserveTable)
+        public  IActionResult CreateReservation(ReserveTable reserveTable, string Jwt)
         {
-            if( reserveTable != null)
+            var Validate = _jwtCollection.Find( c => c.JwtToken == Jwt ).FirstOrDefault();
+            if ( Validate != null)
             {
-                _googleRegister.Find(x => x.Jwt == reserveTable.Jwt);
-                _reservations.InsertOne(reserveTable);
-                return Ok(reserveTable);
+                if (reserveTable != null)
+                {
+                    _reservations.InsertOne(reserveTable);
+                    return Ok(reserveTable);
+                }
+            }else
+            {
+                return Unauthorized();
             }
             return BadRequest("Data not found");
         }

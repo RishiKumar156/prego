@@ -26,7 +26,7 @@ namespace API.Controllers
         public IActionResult RegisterUser(GoogleRegister googleRegister)
         {
             var UserExists = _GoogleRegisterCcollection.Find(c => c.GmailId == googleRegister.GmailId).FirstOrDefault();
-            if(UserExists != null)
+            if(UserExists == null)
             {
                 _GoogleRegisterCcollection.InsertOne(googleRegister);
                 var JWT = CreateToken(googleRegister);
@@ -36,7 +36,7 @@ namespace API.Controllers
                     JwtToken = JWT
                 };
                 _JwtCollection.InsertOne(AddJwt);
-                return Ok(JWT);
+                return Ok(AddJwt.JwtToken.ToString());
             }
             return BadRequest("Something went wrong");
         }

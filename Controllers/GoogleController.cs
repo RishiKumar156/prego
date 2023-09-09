@@ -36,7 +36,7 @@ namespace API.Controllers
                     JwtToken = JWT
                 };
                 _JwtCollection.InsertOne(AddJwt);
-                return Ok(AddJwt.JwtToken.ToString());
+                return Ok(AddJwt);
             }
             return BadRequest("Something went wrong");
         }

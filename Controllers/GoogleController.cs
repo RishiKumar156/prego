@@ -38,9 +38,29 @@ namespace API.Controllers
                 _JwtCollection.InsertOne(AddJwt);
                 return Ok(AddJwt);
             }
-            return BadRequest("Something went wrong");
+            return BadRequest();
         }
 
+        [HttpPost("Glogin")]
+        public IActionResult LoginUser(GoogleRegister googleRegister)
+        {
+            var FindUser = _GoogleRegisterCcollection.Find( c => c.GmailId == googleRegister.GmailId).FirstOrDefault();
+            if(FindUser != null)
+            {
+                var Jwt = _JwtCollection.Find(c => c.Username == FindUser.Gusername).FirstOrDefault();
+                var LoginCredentials = new GoogleLoginDTO
+                {
+                    Gid = FindUser.Gid,
+                    GmailId = FindUser.GmailId,
+                    Gusername = FindUser.Gusername,
+                    Id = FindUser.Id,
+                    Picture = FindUser.Picture,
+                    Jwt = Jwt.JwtToken
+                };
+                return Ok(LoginCredentials);
+            }
+            return BadRequest("User Not Found Register First");
+        }
 
         private string CreateToken(GoogleRegister userRegister)
         {

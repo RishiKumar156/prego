@@ -1,15 +1,10 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
 
 namespace API.Models
 {
-
     [BsonIgnoreExtraElements]
-    public class ReserveTable
+    public class ReservationTableDTO
     {
-        [BsonId]
-        public ObjectId Id { get; set; }
-
         [BsonElement("Ordername")]
         public string OrderName { get; set; }
 
@@ -21,6 +16,5 @@ namespace API.Models
 
         [BsonElement("Jwt")]
         public string Jwt { get; set; }
-        
     }
 }

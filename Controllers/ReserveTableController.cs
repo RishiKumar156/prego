@@ -19,21 +19,22 @@ namespace API.Controllers
         }
 
         [HttpPost("MakeReservation")]
-        public  IActionResult CreateReservation(ReserveTable reserveTable, string Jwt)
+        public  IActionResult CreateReservation(ReservationTableDTO reserveTable)
         {
-            var Validate = _jwtCollection.Find( c => c.JwtToken == Jwt ).FirstOrDefault();
+            var Validate = _jwtCollection.Find( c => c.JwtToken == reserveTable.Jwt ).FirstOrDefault();
             if ( Validate != null)
             {
-                if (reserveTable != null)
+                var MakeReservation = new ReserveTable
                 {
-                    _reservations.InsertOne(reserveTable);
-                    return Ok(reserveTable);
-                }
-            }else
-            {
-                return Unauthorized();
+                    Jwt = reserveTable.Jwt,
+                    OrderDesc = reserveTable.OrderDesc,
+                    OrderName = reserveTable.OrderName,
+                    PhoneNo = reserveTable.PhoneNo,
+                };
+                _reservations.InsertOne(MakeReservation);
+                return Ok(reserveTable);
             }
-            return BadRequest("Data not found");
+            return Unauthorized();
         }
     }
 }

@@ -62,6 +62,19 @@ namespace API.Controllers
             return BadRequest("User Not Found Register First");
         }
 
+        //google individual profile 
+        [HttpGet("SingleProfile")]
+        public IActionResult GuserProfile(string jwt)
+        {
+            var Verify = _JwtCollection.Find(c => c.JwtToken == jwt).FirstOrDefault();
+            var Profile = _GoogleRegisterCcollection.Find( c => c.Gusername == Verify.Username).FirstOrDefault();
+            if(Profile != null)
+            {  
+                return Ok(Profile); 
+            }
+            return BadRequest("Profile not found");
+        }
+
         private string CreateToken(GoogleRegister userRegister)
         {
             List<Claim> claims = new List<Claim>

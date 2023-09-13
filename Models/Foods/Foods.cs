@@ -21,5 +21,13 @@ namespace API.Models.Foods
         [BsonElement("fdesc")]
         public string FoodDesc { get; set; }
 
+        [BsonElement("Quantity")]
+        public int FoodQty { get; set; } 
+
+        public Foods()
+        {
+            FoodQty = 0;
+        }
+
     }
 }
